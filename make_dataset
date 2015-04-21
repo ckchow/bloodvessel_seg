@@ -1,0 +1,4 @@
+!#/usr/bin/env bash
+
+cd dataset
+~/3rdparty/vascusynth/build/VascuSynth paramFiles.txt imageNames.txt 0.04 testNoise.txt
