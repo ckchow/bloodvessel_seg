@@ -8,6 +8,8 @@ input_fnames = dir(fullfile(input_dir, '*.jpg'));
 
 in_names = {input_fnames.name};
 
+
+biggest_dim = 0;
 for fname = in_names
     cur_name = fname{1};
     fpath = fullfile(input_dir, cur_name);   
@@ -48,9 +50,41 @@ for fname = in_names
     
     im_out = imwarp(I, tform);
     
+    [r, c] = size(im_out);
+    
+    if r > biggest_dim
+        biggest_dim = r;
+    end
+    if c > biggest_dim
+        biggest_dim = c;
+    end
+    
     imwrite(im_out, fullfile(output_dir, cur_name));
 
 end
+%%
+transformed_files= dir(fullfile(output_dir, '*.jpg'));
+transformed_fnames = {transformed_files.name};
+
+pad_out = './dataset/image1/pad_out_0';
+
+for fname = transformed_fnames
+    cur_name = fname{1};
+    cur_file = fullfile(output_dir, cur_name);
+    
+    I = imread(cur_file);
+    
+    [m, n] = size(I);
+    
+    padded = padarray(I, [floor((biggest_dim-m)/2) floor((biggest_dim-n)/2)], 'replicate','post');
+    padded = padarray(padded, [ceil((biggest_dim-m)/2) ceil((biggest_dim-n)/2)], 'replicate','pre');
+
+    [r, c] = size(padded)
+    
+    imwrite(padded, fullfile(pad_out, cur_name));
+end
+
+
 
 
 
